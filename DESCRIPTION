@@ -1,0 +1,14 @@
+Package: GMS
+Type: Package
+Title: Generative Multi-purpose and Bootstrap Sampler
+Version: 0.1.0
+Author: Minsuk Shin, Shijie Wang, and Jun Liu
+Maintainer: Minsuk Shin <minuk000@gmail.com>
+Description: Generative Multi-purpose Sampler (GMS) and Generative Bootstrap Sampler (GMS): A scalble and fast bootstrap procedure for general models. It is required to install python and pytorch in advance; see https://pytorch.org/get-started/locally/
+         To reduce the computational time to train the generator, it is recommended to consider a GPU computing environment.  
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: reticulate, Rcpp
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.2.0
