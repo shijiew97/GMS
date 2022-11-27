@@ -35,9 +35,10 @@ GMS_Sampling <- function(fit_GMS, B1=3000, B2=100, B10=NULL, lam_schd = NULL, X=
   if(is.null(eta) == T ){
     eta = 0.5
   }
-
+  p = ncol(X)
   if(is.null(y) == FALSE){
     if( is.vector(y) == T ){
+      n = length(y)
       y = matrix(y,n,1)
     }
     y_py = r_to_py(y, convert = FALSE)
