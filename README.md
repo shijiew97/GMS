@@ -65,6 +65,7 @@ for(k in 1:4){
     text(p/2,-2, paste(cov,"%",sep=""))
 }
 ```
+![Alt text](Image/linear.png)
 
 #### 4. Cross-Validation for Lasso
 In order to run the lasso, R package `mvtnorm` is required and `lars` is required.
