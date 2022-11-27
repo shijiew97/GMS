@@ -114,7 +114,8 @@ def GMS_sampling(fit, lam_schd, y, X, B1, B2, B10, gpu_ind1, type1, eta):
       eta = 0.5*torch.ones(B10*B2,1).to(device)
       Theta2 = G(alpha2.reshape(B2*B10,S), lam, eta, batchnorm_on)
       Theta2 = Theta2.reshape(B2,B10,p)
-        
+      alpha11 = alpha1.cpu().detach().numpy()
+      
       Theta1 = Theta1.cpu().detach().numpy()
       Theta2 = Theta2.cpu().detach().numpy()
       lam = torch.ones(B10,1).to(device)
