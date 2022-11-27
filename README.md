@@ -30,13 +30,13 @@ There are three main functions in the `GMS` package, which is detailed specified
 - `GMS_Loading`  loads a pre-trained generator for further training or generation procedure using object from `GMS`.
 
 ### 3. Linear Regression Example 
-To illustrate how to use the `GMS` pacakge, we provide sample code for simple linear regression model. The smaple size of simulated data is 500 and corvariate dimension is set to be 50.
+To illustrate how to use the `GMS` pacakge, we provide sample code for simple linear regression model. The smaple size of simulated data is 500 and corvariate dimension is set to be 30.
 
 - First, generate dataset using following `R` code where true $\theta \in [-1,1]$.
 ```{r, eval=FALSE}
 set.seed(82941)
 n = 500
-p = 50
+p = 30
 bt0 = seq(-1,1,length.out = p)
 X = matrix(rnorm(n*p),n,p)
 mu0 = crossprod(t(X),bt0)
@@ -110,10 +110,10 @@ plot(samples_GMS$lam_schd*0.5, samples_GMS$CV_err, col="grey", type="l", lwd=3, 
 points(lam_cand, fit_lasso, type="l", col="blue", lty=2, lwd=2, ylim=c(1.0, 2.2))
 legend("topleft", c("GMS","Standard LASSO"), col=c("grey","blue"), lty=c(1,2), bty="n", cex=0.9, lwd=c(3,2))
 ```
-
+![Alt text](Image/lasso.png)
 
 ### 4. Logistics Regression Example
-Data generation
+- Data generation
 ```{r, eval=FALSE}
 library(reticulate)
 set.seed(82941)
@@ -126,7 +126,7 @@ mu = X%*%bt0
 prob = 1/(1+exp(-1*mu))
 y = matrix(rbinom(n,1,prob), n, 1)
 ```
-Then training the generator and construct condifence interval via Double Bootstrap
+- Then training the generator and construct condifence interval via Double Bootstrap
 ```{r, eval=FALSE}
 fit_GMS = GMS(X, y, model="logistic", type="DoubleBoot", num_it=25000,
 lr_power=0.2, L=4, S=100, lr0=0.0001, sgd="Adam", hidden_size=1000, NN_type="WM-MLP")
