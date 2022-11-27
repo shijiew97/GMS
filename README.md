@@ -29,14 +29,14 @@ There are three main functions in the `GMS` package, which is detailed specified
 - `post_process` Post-processing procedure to evaluate CIs and bias-corrected estimators using object from `GMS_sampling`.
 - `GMS_Loading`  loads a pre-trained generator for further training or generation procedure using object from `GMS`.
 
-### 3. Example 
-To illustrate how to use the `GMS` pacakge. Here we provide some example codes.
+### 3. Linear Regression Example 
+To illustrate how to use the `GMS` pacakge, we provide sample code for simple linear regression model. The smaple size of simulated data is 500 and corvariate dimension is set to be 50.
 
-- Linear regression
-First generate dataset
+- First, generate dataset using following `R` code where true $\theta \in [-1,1]$.
 ```{r, eval=FALSE}
 set.seed(82941)
-n = 500;p = 50
+n = 500
+p = 50
 bt0 = seq(-1,1,length.out = p)
 X = matrix(rnorm(n*p),n,p)
 mu0 = crossprod(t(X),bt0)
@@ -44,13 +44,14 @@ y = mu0 + rnorm(n)
 fit = lm(y~0+X)
 theta_hat = fit$coefficients
 ```
-Then train the GMS generator and construct condifence interval via Double Bootstrap
+- Next, train GMS generator using `GMS`, obtain double bootstrap samples using `GMS_Sampling` and construct 95% condifence interval using `post_process`.
 ```{r, eval=FALSE}
 fit_GMS = GMS(X, y, model="linear", type="DoubleBoot", NN_type="WM-MLP")
 samples_GMS = GMS_Sampling(fit_GMS, B1 = 1000, B10 = 500, X = X, y = y)
 res = post_process(samples_GMS, theta_hat = theta_hat, thre=0.001)
 ```
-Finally visualizing the results
+
+- Finally, visualizing the results
 ```{r, eval=FALSE}
 par(mfrow=c(2,2),mai=c(0.4,0.4,0.1,0.1))
 for(k in 1:4){
@@ -65,7 +66,53 @@ for(k in 1:4){
 }
 ```
 
-- Logistics regression example
+#### 4. Cross-Validation for Lasso
+In order to run the lasso, R package `mvtnorm` is required and `lars` is required.
+- Using the same simulation setting described in paper to simulate the data.
+```{r, eval=FALSE}
+library(mvtnorm)
+set.seed(123456)
+n = 500
+p = 50
+bt0 = rep(0, p);bt0[1:3] = c(1,-2,1)
+sigma = matrix(1/2, p, p) + diag(1/2, p, p)
+X = matrix(rmvnorm(n, sigma=sigma), n, p)
+mu0 = crossprod(t(X), bt0)
+y = mu0 + rnorm(n)
+y = matrix(y, n, 1)
+```
+- Using the GMS to fit lasso with cross validation
+```{r, eval=FALSE}
+lam_cand = exp(seq(-9, -1, length.out=100))
+fit_GMS = GMS(X, y, model="linear", type="CV", NN_type="MLP", cv_K=10, S=100, K0=10, lam_schd=lam_cand*2)
+samples_GMS = GMS_Sampling(fit_GMS, B1=1000, B10 =1000, X=X, y=y)
+```
+- Using classic `LARS` to obtain the standard cross validation 
+```{r, eval=FALSE}
+nfold = 10
+fold_ind = rep(1:10, each=n/10)
+cv_lasso = function(X, y, lam, n){
+   library(lars)
+   cv_err = matrix(0, nfold, length(lam))
+   for (i in 1:nfold){
+     fit_lasso = lars(X[fold_ind!=i, ], y[fold_ind!=i, ], type="lasso", intercept=F, normalize=F)
+     for (j in 1:length(lam)){
+        yhat = predict(fit_lasso, X[fold_ind==i,], lam[j]*n, mode="lambda", type="fit")$fit
+        cv_err[i,j] = mean( (yhat-y[foldid==i])^2 )
+        }}
+   return(colMeans(cv_err)) }
+fit_lasso = cv_lasso(X, y, lam_cand, n)
+```
+
+- Visualizing the results
+```{r, eval=FALSE}
+plot(samples_GMS$lam_schd*0.5, samples_GMS$CV_err, col="grey", type="l", lwd=3, xlab="lambda", ylab="CV Error")
+points(lam_cand, fit_lasso, type="l", col="blue", lty=2, lwd=2, ylim=c(1.0, 2.2))
+legend("topleft", c("GMS","Standard LASSO"), col=c("grey","blue"), lty=c(1,2), bty="n", cex=0.9, lwd=c(3,2))
+```
+
+
+### 4. Logistics Regression Example
 Data generation
 ```{r, eval=FALSE}
 library(reticulate)
