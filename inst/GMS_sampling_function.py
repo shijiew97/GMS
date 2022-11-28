@@ -168,6 +168,7 @@ def GMS_sampling(fit, lam_schd, y, X, B1, B2, B10, gpu_ind1, type1, eta):
         sys.stdout.flush()
       Theta_cv_one = Theta_cv_one.cpu().detach().numpy() 
       CV_err = CV_err.cpu().detach().numpy() 
+      alpha11 = 1.0
       
     if type1 == "Boot-CV": # bootstrapped CV
       ind = range(S*int(n/S)) 
@@ -220,6 +221,7 @@ def GMS_sampling(fit, lam_schd, y, X, B1, B2, B10, gpu_ind1, type1, eta):
 
       Theta_cv_one = Theta_cv_one.cpu().detach().numpy() 
       CV_err = CV_err.cpu().detach().numpy() 
+      alpha11 = 1.0
 
     if type1 == "NCV":
 #      Theta_cv_boot = torch.zeros(K,M,N,p).to('cpu')
@@ -286,9 +288,11 @@ def GMS_sampling(fit, lam_schd, y, X, B1, B2, B10, gpu_ind1, type1, eta):
         spaces  = ' ' * (20 - len(arrow))
         print('[%s/%s]'% (k+1, K), 'Progress: [%s%s] %d %%' % (arrow, spaces, percent), end='\r')
         sys.stdout.flush()
+
       #Theta_cv_boot = Theta_boot.cpu().detach().numpy() 
       Theta_cv_one = Theta_cv_one.cpu().detach().numpy() 
       CV_err = CV_err.cpu().detach().numpy() 
+      alpha11 = 1.0
       
     
     if stab_sel_on == 1:
