@@ -18,7 +18,7 @@ install.package("devtools")
 Now, use the following code to install `GMS` package.
 ```
 library(devtools)
-install_github(repo = "Jackie97zz/GMS")
+install_github(repo = "shijiew97/GMS")
 library(GMS)
 ```
 
