@@ -371,17 +371,18 @@ Penalty, eta_on, model, D, penalty_type, w_type):
     Lam = torch.exp(torch.log(lam_schd[[ind]]) + 0.2*torch.randn(K0,1).to(device))
   
   alpha = w_full_sample.sample().to(device)
-
+  
+  #print(eta)
   #print(eta_on)
   #sys.stdout.flush()
   alpha1 = torch.ones(1,S).to(device)
   while J == 1:
       if eta_on == 1:
         if it % 20 == 5:
-          eta += 0.01*torch.randn(K0,1).to(device)
-        ind_eta = np.random.choice(range(n_eta),int(K0/2)) 
-        eta[range(int(K0/2)),:] = eta_cand[ind_eta].reshape(int(K0/2),1).to(device)
-        eta[range(int(K0/2)),:] += 0.05*torch.randn(int(K0/2),1).to(device)
+          eta += 0.001*torch.randn(K0,1).to(device)
+        #ind_eta = np.random.choice(range(n_eta),int(K0/2)) 
+        #eta[range(int(K0/2)),:] = eta_cand[ind_eta].reshape(int(K0/2),1).to(device)
+        #eta[range(int(K0/2)),:] += 0.05*torch.randn(int(K0/2),1).to(device)
       ##############################
       lr = lr0/((it0+1.0)**lr_power)
       if sgd == 'Adam' or 'SGD':
