@@ -59,7 +59,7 @@
 #' #### linear regression example
 #' library(reticulate)
 #' set.seed(82941)
-#' n = 500;p = 50
+#' n = 500;p = 30
 #' bt0 = seq(-1,1,length.out = p)
 #' X = matrix(rnorm(n*p),n,p)
 #' mu0 = crossprod(t(X),bt0)
@@ -68,20 +68,20 @@
 #' theta_hat = fit$coefficients
 #' ##############################
 #' #### Training steps
-#' #fit_GMS = GMS(X, y, model="linear", type="DoubleBoot", NN_type="WM-MLP")
-#' #samples_GMS = GMS_Sampling(fit_GMS, B1 = 1000, B10 = 500, X = X, y = y)
-#' #res = post_process(samples_GMS, theta_hat = theta_hat, thre=0.001)
-#' #par(mfrow=c(2,2),mai=c(0.4,0.4,0.1,0.1))
-#' #for(k in 1:4){
-#' #  plot(1:p, type="n", ylim=c(-2.5,2))
-#' #  CI = res[[k+1]]
-#' #  points(bt0, pch=4,col="blue")
-#' #  for(j in 1:p){
-#' #    lines(rep(j,2), c(CI[j,1],CI[j,2]), col="red",lwd=2)
-#' #  }
-#' #  cov = 100*length(which(CI[,1]<bt0 & CI[,2]>bt0))/p
-#' #  text(p/2,-2, paste(cov,"%",sep=""))
-#' #}
+#' fit_GMS = GMS(X, y, model="linear", type="SingleBoot", NN_type="WM-MLP")
+#' samples_GMS = GMS_Sampling(fit_GMS, B1 = 1000, B10 = 500, X = X, y = y)
+#' res = post_process(samples_GMS, theta_hat = theta_hat, thre=0.001)
+#' par(mfrow=c(2,2),mai=c(0.4,0.4,0.1,0.1))
+#' for(k in 1:4){
+#'   plot(1:p, type="n", ylim=c(-2.5,2))
+#'   CI = res[[k+1]]
+#'   points(bt0, pch=4,col="blue")
+#'   for(j in 1:p){
+#'     lines(rep(j,2), c(CI[j,1],CI[j,2]), col="red",lwd=2)
+#'   }
+#'   cov = 100*length(which(CI[,1]<bt0 & CI[,2]>bt0))/p
+#'   text(p/2,-2, paste(round(cov,2),"%",sep=""))
+#' }
 #' #### Logistic regression example
 #' library(reticulate)
 #' set.seed(82941)
@@ -154,6 +154,7 @@ GMS <- function(X = NULL, y, eta_cand = NULL, model, p = NULL, type = "DoubleBoo
       eta_on = 0
     }else{
       eta_on = 1
+      eta_cand = matrix(eta_cand, ncol=1)
       n_eta = length(eta_cand)
     }
   }
