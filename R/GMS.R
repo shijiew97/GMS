@@ -207,7 +207,7 @@ GMS <- function(X = NULL, y, eta_cand = NULL, model, p = NULL, type = "DoubleBoo
   cv_on = 0
   double_boot = 0
   stab_sel_on = 0
-  if(type == "CV"){
+  if(type == "CV"|type == "Boot-CV"){
     cv_on = 1
     double_boot = 0
     stab_sel_on = 0
@@ -309,7 +309,7 @@ GMS <- function(X = NULL, y, eta_cand = NULL, model, p = NULL, type = "DoubleBoo
   print(paste("Time for training of G: ",round(time_tr,2), " seconds"))
   print("######################################################")
   type_save = list(type = type)
-  if( type == "CV" | type == "NCV"){
+  if( type == "CV" | type == "NCV"| type == "Boot-CV"){
     type_save = list(type = type, cv_K = cv_K)
   }
   eta_cand = py_to_r(eta_cand)
