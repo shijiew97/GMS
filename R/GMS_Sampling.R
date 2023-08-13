@@ -63,7 +63,8 @@ GMS_Sampling <- function(fit_GMS, B1=3000, B2=100, B10=NULL, lam_schd = NULL, X=
     lam_schd = matrix(lam_schd, length(lam_schd),1)
   }
   M = length(lam_schd)
-  eta_cand = fit_GMS[[9]]
+  #eta_cand = fit_GMS[[9]]
+  #print(eta_cand)
 
   have_torch <- reticulate::py_module_available("torch")
   have_random <- reticulate::py_module_available("random")
@@ -126,7 +127,7 @@ GMS_Sampling <- function(fit_GMS, B1=3000, B2=100, B10=NULL, lam_schd = NULL, X=
   }
   if(type == "Boot-CV"){
     A1 = B1 / B10
-    K = py_to_r(fit_GMS$type[[2]])
+    K = py_to_r(fit_GMS[[2]][[2]])#py_to_r(fit_GMS$type[[2]])
     CV_err_boot = array(0,dim=c(M,K,B1))
     for(m in 1:A1){
       ind = ((m-1)*B10+1):(m*B10)
@@ -174,6 +175,8 @@ GMS_Sampling <- function(fit_GMS, B1=3000, B2=100, B10=NULL, lam_schd = NULL, X=
     for(m in 1:A1){
       ind = ((m-1)*B10+1):(m*B10)
       samples = GMS_sampling(fit, lam_schd_py, y_py, X_py, B1_py, B2_py, B10_py, gpu_ind, type, eta)
+      #print(samples[[1]])
+      #print(ind)
       #samples = py_to_r(samples)
       Theta1[ind,] = samples[[1]]
       weight = samples[[8]]
