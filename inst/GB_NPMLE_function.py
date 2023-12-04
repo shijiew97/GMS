@@ -74,9 +74,9 @@ Param, Lr0, Verb, Tol, LrDecay, Lrpower, Save, Save_path):
     X = X.to(device, dtype=torch.float)
     
   if torch.is_tensor(Y) == False:
-    Y = torch.from_numpy(Y).to(device, dtype=torch.float).view(n,p)
+    Y = torch.from_numpy(Y).to(device, dtype=torch.float).view(n,1)
   else:
-    Y = Y.to(device, dtype=torch.float).view(n,p)
+    Y = Y.to(device, dtype=torch.float).view(n,1)
   #Determine which algorithm is using
   if k == 1:
     em0 = 0
